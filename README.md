@@ -7,28 +7,6 @@ These two models are based on a general-purpose **Tran**sition-based abstract sy
 The System Architecture is the same as **TranX** [ACL '18 paper](https://arxiv.org/abs/1806.07832). Please refer to https://github.com/pcyin/tranX .
 
 
-### Evaluation Results
-
-Here is a list of performance results on four datasets using pretrained models in `data/saved_models`
-
-- **ML-TRANX** :
-| Dataset | Results      | Metric             |
-| ------- | ------------ | ------------------ |
-| Django    | 79.3         | Accuracy           |
-| ATIS     | 89.7         | Accuracy           |
-| GEO      | 90.0         | Accuracy           |
-| IFTTT     | 86.6         | Full Tree Accuracy |
-
-
-
-- **ML-TRANX'** :
-| Dataset | Results      | Metric             |
-| ------- | ------------ | ------------------ |
-| Django    | 78.8         | Accuracy           |
-| ATIS     | 88.2         | Accuracy           |
-| GEO      | 89.2         | Accuracy           |
-| IFTTT     | 85.4        | Full Tree Accuracy |
-
 ## Usage
 
 ```bash
