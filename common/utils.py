@@ -69,7 +69,8 @@ def init_arg_parser():
 
     # supervised attention
     arg_parser.add_argument('--sup_attention', default=False, action='store_true', help='Use supervised attention')
-    arg_parser.add_argument('--share_embedding', default=True, action='store_false', help='Do not use input feeding in decoder LSTM')
+    arg_parser.add_argument('--share_embedding', default=False, action='store_false', help='Do not use input feeding in decoder LSTM')
+    arg_parser.add_argument('--share_encoder', default=False, action='store_false', help='Do not use input feeding in decoder LSTM')
 
     
     # parent information switch for decoder LSTM

@@ -102,15 +102,28 @@ def train(args):
         model_teacher = parser_cls_teacher.load(model_path=args.pretrain_teacher, cuda=args.cuda)
         
     else:
-        src_embed = nn.Embedding(len(vocab.source), args.embed_size)
-        nn.init.xavier_normal_(src_embed.weight.data)
+        
         if args.share_embedding:
+            src_embed = nn.Embedding(len(vocab.source), args.embed_size)
+            nn.init.xavier_normal_(src_embed.weight.data)
             model_student = parser_cls_student(args, vocab, transition_system,\
                                                init=True,srcEmbed=src_embed)
             model_teacher = parser_cls_teacher(args, vocab, transition_system,\
                                                init=True,srcEmbed=src_embed)
+        elif args.share_encoder:
+            src_embed = nn.Embedding(len(vocab.source), args.embed_size)
+            nn.init.xavier_normal_(src_embed.weight.data)
+            encoder_lstm = nn.LSTM(args.embed_size, int(args.hidden_size / 2), bidirectional=True)
+
+            model_student = parser_cls_student(args, vocab, transition_system,\
+                                               init=True,srcEmbed=src_embed,
+                                               srcLstm=encoder_lstm)
+            model_teacher = parser_cls_teacher(args, vocab, transition_system,\
+                                               init=True,srcEmbed=src_embed,
+                                               srcLstm=encoder_lstm)
+
         else:
-            print("no share embedding")
+            
             model_student = parser_cls_student(args, vocab, transition_system, init=False)
             model_teacher = parser_cls_teacher(args, vocab, transition_system, init=False)
 

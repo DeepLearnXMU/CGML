@@ -37,7 +37,7 @@ class ParserStudent(nn.Module):
     def reset_args(self, args):
         self.args = args
         
-    def __init__(self, args, vocab, transition_system,init=True,srcEmbed=None):
+    def __init__(self, args, vocab, transition_system,init=True,srcEmbed=None,srcLstm=None):
         super(ParserStudent, self).__init__()
         self.args = args
         self.vocab = vocab
@@ -81,7 +81,9 @@ class ParserStudent(nn.Module):
 
         # LSTMs
         if args.lstm == 'lstm':
-            self.encoder_lstm = nn.LSTM(args.embed_size, int(args.hidden_size / 2), bidirectional=True)
+            self.encoder_lstm = srcLstm if srcLstm is not None else nn.LSTM(args.embed_size, int(args.hidden_size / 2), bidirectional=True)
+            
+            #self.encoder_lstm = nn.LSTM(args.embed_size, int(args.hidden_size / 2), bidirectional=True)
 
             input_dim = args.action_embed_size  # previous action
             # frontier info
@@ -94,7 +96,9 @@ class ParserStudent(nn.Module):
 
             self.decoder_lstm = nn.LSTMCell(input_dim, args.hidden_size)
         elif args.lstm == 'parent_feed':
-            self.encoder_lstm = nn.LSTM(args.embed_size, int(args.hidden_size / 2), bidirectional=True)
+            self.encoder_lstm = srcLstm if srcLstm is not None else nn.LSTM(args.embed_size, int(args.hidden_size / 2), bidirectional=True)
+
+            #self.encoder_lstm = nn.LSTM(args.embed_size, int(args.hidden_size / 2), bidirectional=True)
             from .lstm import ParentFeedingLSTMCell
 
             input_dim = args.action_embed_size  # previous action

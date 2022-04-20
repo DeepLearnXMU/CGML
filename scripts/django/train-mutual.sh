@@ -27,15 +27,15 @@ beam_size=15
 max_epoch=50
 func="KL"
 lstm='lstm'  # lstm
-lambda=0.50
+lambda=0.75
 src_dropout=0.4
-model_name=model.django.seed${seed}.pretain.lambda${lambda}.dropout${dropout}.share.embedding
+model_name=model.django.seed${seed}.pretain.lambda${lambda}.dropout${dropout}.share.encoder
 
 echo "**** Writing results to logs/django/${model_name}.log ****"
 mkdir -p logs/django
 echo commit hash: `git rev-parse HEAD` > logs/django/${model_name}.log
 
-python -u exp_distillation_share_embedding.py \
+python -u exp_distillation.py \
     --cuda \
     --seed ${seed} \
     --mode train \
@@ -55,6 +55,7 @@ python -u exp_distillation_share_embedding.py \
     --parser_teacher ${parser_teacher} \
     --vocab ${vocab} \
     --lstm ${lstm} \
+    --share_encoder \
     --max_epoch ${max_epoch} \
     --no_parent_field_type_embed \
     --no_parent_production_embed \

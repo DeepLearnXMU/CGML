@@ -1,13 +1,15 @@
-# ML-TranX and ML-TranX'
+# CGML
+
+## ML-TranX and ML-TranX'
 These two models are based on a general-purpose **Tran**sition-based abstract synta**X** parser [ACL '18 paper](https://arxiv.org/abs/1806.07832) and  
 **TranX'** is a variant of **TranX** which decodes in a breadth-first manner. By adopting a mutual learning based model training framework, both models can fully absorb the knowledge from each other and thus could be improved simultaneously.
 
 
-## System Architecture
+### System Architecture
 The System Architecture is the same as **TranX** [ACL '18 paper](https://arxiv.org/abs/1806.07832). Please refer to https://github.com/pcyin/tranX .
 
 
-## Usage
+### Usage
 
 ```bash
 cd tranX
@@ -24,3 +26,4 @@ conda env create -f config/env/tranx.yml  # create conda Python environment.
 ./scripts/geo/test_used.sh      # modify the configuration to test the model on geo code generation dataset
 ./scripts/ifttt/test_used.sh     # modify the configuration to test the model on ifttt code generation dataset
 ```
+

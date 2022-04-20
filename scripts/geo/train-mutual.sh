@@ -2,48 +2,45 @@
 set -e
 
 seed=${1:-0}
-vocab="data/ifttt/vocab.freq2.bin"
-train_student_file="data/ifttt/train_student.bin"
-train_teacher_file="data/ifttt/train_teacher.bin"
-dev_file="data/ifttt/dev.bin"
+vocab="data/geo/vocab.freq2.bin"
+train_student_file="data/geo/train_student.bin"
+train_teacher_file="data/geo/train_teacher.bin"
+train_file="data/geo/train.bin"
 parser_student="default_student_parser"
 parser="default_parser"
 parser_teacher="default_teacher_parser"
 dropout=0.5
+src_dropout=0.5
 hidden_size=256
 embed_size=128
 action_embed_size=128
-field_embed_size=64
-type_embed_size=64
-ptrnet_hidden_dim=32
-lr=0.001
-ls=0.1
-lr_decay=0.9
-lr_decay_after_epoch=6
-beam_size=15
+field_embed_size=32
+type_embed_size=32
+lr_decay=0.985
+lr_decay_after_epoch=20
+beam_size=5
 lstm='lstm'
-src_dropout=0.3
-max_epoch=50
+lr=0.0025
+ls=0.1
+max_epoch=160
 lambda_num=0.25
-model_name=model.ifttt.seed${seed}.mutual.share.embedding.dropout${dropout}.src_dropout${src_dropout}.lambda${lambda_num}
+patience=1000   # disable patience since we don't have dev set
+model_name=model.geo.seed${seed}.mutual.share.embedding.dropout${dropout}.src_dropout${src_dropout}.lambda_num${lambda_num}
 
-echo "**** Writing results to logs/ifttt/${model_name}.log ****"
-mkdir -p logs/ifttt
-echo commit hash: `git rev-parse HEAD` > logs/ifttt/${model_name}.log
+echo "**** Writing results to logs/geo/${model_name}.log ****"
+mkdir -p logs/geo
+echo commit hash: `git rev-parse HEAD` > logs/geo/${model_name}.log
 
-python -u exp_distillation_share_embedding.py \
+python -u exp_distillation.py \
     --cuda \
     --seed ${seed} \
     --mode train \
-    --batch_size 60 \
     --lambda_num ${lambda_num} \
-    --evaluator ifttt_evaluator \
-    --evaluator_student ifttt_evaluator \
-    --evaluator_teacher ifttt_evaluator \
-    --asdl_file asdl/lang/ifttt/ifttt_asdl.txt \
-    --transition_system ifttt \
+    --batch_size 10 \
+    --asdl_file asdl/lang/lambda_dcs/lambda_asdl.txt \
+    --transition_system lambda_dcs \
     --src_dropout ${src_dropout} \
-    --dev_file ${dev_file} \
+    --train_file ${train_file} \
     --train_student_file ${train_student_file} \
     --train_teacher_file ${train_teacher_file} \
     --parser ${parser} \
@@ -54,21 +51,25 @@ python -u exp_distillation_share_embedding.py \
     --primitive_token_label_smoothing ${ls} \
     --no_parent_field_type_embed \
     --no_parent_production_embed \
+    --no_parent_field_embed \
+    --no_parent_state \
     --hidden_size ${hidden_size} \
     --embed_size ${embed_size} \
+    --share_embedding \
     --action_embed_size ${action_embed_size} \
     --field_embed_size ${field_embed_size} \
     --type_embed_size ${type_embed_size} \
     --dropout ${dropout} \
-    --patience 5 \
+    --patience ${patience} \
     --max_num_trial 5 \
-    --vaildate_begin_epoch 14 \
-     --max_epoch ${max_epoch} \
+    --max_epoch ${max_epoch} \
     --glorot_init \
     --lr ${lr} \
+    --no_copy \
     --lr_decay ${lr_decay} \
     --lr_decay_after_epoch ${lr_decay_after_epoch} \
     --decay_lr_every_epoch \
     --beam_size ${beam_size} \
+    --decode_max_time_step 110 \
     --log_every 50 \
-    --save_to saved_models/ifttt/${model_name} 2>&1 | tee -a logs/ifttt/${model_name}.log
+    --save_to saved_models/geo/${model_name} 2>&1 | tee -a logs/geo/${model_name}.log
